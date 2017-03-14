@@ -1,0 +1,40 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    first: true,
+    label: 'KeyCDN API Key'|t,
+    id: 'apiKey',
+    required: true,
+    name: 'apiKey',
+    value: settings.apiKey,
+    placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    autofocus: true,
+    errors: settings.getErrors('apiKey'),
+    instructions: "Add your unique KeyCDN API key. You can find this on your account page in KeyCDN."
+}) }}
+
+{{ forms.textField({
+    first: true,
+    label: 'KeyCDN Pull Zone Name'|t,
+    id: 'zone',
+    required: true,
+    name: 'zone',
+    value: settings.zone,
+    placeholder: 'foo.kxcdn.com'
+    autofocus: true,
+    errors: settings.getErrors('zone'),
+    instructions: "Add the KeyCDN Pull Zone you're using for this site."
+}) }}
+
+{{ forms.textField({
+    first: true,
+    label: 'KeyCDN Pull Zone ID'|t,
+    id: 'zoneId',
+    required: true,
+    name: 'zoneId',
+    value: settings.zoneId,
+    placeholder: '1000'
+    autofocus: true,
+    errors: settings.getErrors('zoneId'),
+    instructions: "Add the KeyCDN Pull Zone ID you're using for this site."
+}) }}
