@@ -8,6 +8,10 @@ Drop the `keycdn` folder in your `craft/plugins` directory, then visit Settings 
 
 Add your KeyCDN API key and zone details to the plugin settings, and you should be done. Just be sure to test, because that's always a fabulous idea.
 
+## Nuking Your Zone
+
+Visit `/admin/actions/keycdn/clearZone`.
+
 ## Limitations
 
 - The plugin assumes you're using a single zone.
