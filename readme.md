@@ -23,3 +23,9 @@ Submit an issue here or email hello@workingconcept.com if you run into any issue
 - Supports only one zone.
 - Doesn't know or care which Asset sources feed KeyCDN, just tries clearing URLs in update+delete conditions.
 - May not be suitable for sizeable bulk operations; if you replace or delete a massive number of files, it could result in the same number of hits to the KeyCDN API.
+
+---
+
+## Miscellanea
+
+The plugin's icon uses the KeyCDN logo mark [found on this page](https://www.keycdn.com/logos) and is the property of KeyCDN.

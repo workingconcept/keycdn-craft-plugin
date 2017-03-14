@@ -11,7 +11,12 @@ class KeycdnPlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.0.1';
+		return '0.1.0';
+	}
+
+	public function getDescription()
+	{
+		return 'Automatically clear cached KeyCDN Asset URLs.';
 	}
 
 	public function getDeveloper()
@@ -22,6 +27,16 @@ class KeycdnPlugin extends BasePlugin
 	public function getDeveloperUrl()
 	{
 		return 'https://workingconcept.com';
+	}
+
+	public function getReleaseFeedUrl()
+	{
+		return 'https://raw.githubusercontent.com/workingconcept/keycdn-craft-plugin/master/releases.json';
+	}
+
+	public function getDocumentationUrl()
+	{
+	    return 'https://github.com/workingconcept/keycdn-craft-plugin/blob/master/readme.md';
 	}
 
 	public function hasCpSection()
