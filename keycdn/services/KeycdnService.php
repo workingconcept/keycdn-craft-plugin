@@ -68,7 +68,8 @@ class KeycdnService extends BaseApplicationComponent
 	{
 		if ( ! $this->isLinked)
 		{
-			return false;
+			// TODO: warn that we don't have an API key, rather than just failing silently
+			return;
 		}
 
 		$requestSettings = array(
@@ -82,6 +83,8 @@ class KeycdnService extends BaseApplicationComponent
 		);
 
 		$client = new \Guzzle\Http\Client($this->apiBaseUrl);
+
+		// TODO: respond thoughtfully to failures
 
 		if ($method === 'get')
 		{
