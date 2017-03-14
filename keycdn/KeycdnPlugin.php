@@ -26,20 +26,43 @@ class KeycdnPlugin extends BasePlugin
 
 	public function hasCpSection()
 	{
-		return true;
+		return false;
 	}
 
 	public function init()
 	{
-		craft()->on('assets.onSaveAsset', function (Event $event) {
+		// TODO: limit potential action to Asset sources that rely on KeyCDN
 
+		craft()->on('assets.onSaveAsset', function (Event $event) {
 			if ($event->params['isNewAsset'] === false)
 			{
 				$asset = $event->params['asset'];
-
-				// TODO: limit potential action to Asset sources that rely on KeyCDN
-				craft()->keycdn->clearUrls(array($asset->url));
+				$response = craft()->keycdn->clearUrls(array($asset->url));
+				KeycdnPlugin::log(print_r($response, true), LogLevel::Info);
 			}
 		});
+
+		craft()->on('assets.onDeleteAsset', function (Event $event) {
+			$asset = $event->params['asset'];
+			$response = craft()->keycdn->clearUrls(array($asset->url));
+			KeycdnPlugin::log(print_r($response, true), LogLevel::Info);
+		});
 	}
+
+	public function getSettingsHtml()
+	{
+		return craft()->templates->render('keycdn/_settings', array(
+			'settings' => craft()->keycdn->settings
+		));
+	}
+
+	protected function defineSettings()
+	{
+		return array(
+			'apiKey' => array(AttributeType::String, 'required' => true, 'label' => 'KeyCDN API Key'),
+			'zone'   => array(AttributeType::String, 'required' => true, 'label' => 'KeyCDN Zone URL'),
+			'zoneId' => array(AttributeType::String, 'required' => true, 'label' => 'KeyCDN Zone ID'),
+		);
+	}
+
 }

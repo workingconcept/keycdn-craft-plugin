@@ -10,20 +10,20 @@
 	placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
 	autofocus: true,
 	errors: settings.getErrors('apiKey'),
-	instructions: "Add your unique KeyCDN API key. You can find this on your account page in KeyCDN."
+	instructions: "Add your API key. You can find this in _Account Settings_ → _Authentication_ page in KeyCDN."
 }) }}
 
 {{ forms.textField({
 	first: true,
-	label: 'KeyCDN Pull Zone Name'|t,
+	label: 'KeyCDN Pull Zone URL'|t,
 	id: 'zone',
 	required: true,
 	name: 'zone',
 	value: settings.zone,
-	placeholder: 'foo.kxcdn.com'
+	placeholder: 'foo.kxcdn.com',
 	autofocus: true,
 	errors: settings.getErrors('zone'),
-	instructions: "Add the KeyCDN Pull Zone you're using for this site."
+	instructions: "Add the KeyCDN Pull Zone URL you're using for this site."
 }) }}
 
 {{ forms.textField({
@@ -33,7 +33,7 @@
 	required: true,
 	name: 'zoneId',
 	value: settings.zoneId,
-	placeholder: '1000'
+	placeholder: '1000',
 	autofocus: true,
 	errors: settings.getErrors('zoneId'),
 	instructions: "Add the KeyCDN Pull Zone ID you're using for this site."

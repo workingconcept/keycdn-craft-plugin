@@ -4,9 +4,9 @@ namespace Craft;
 
 class KeycdnService extends BaseApplicationComponent
 {
+	public $settings = array();
 
 	protected $apiBaseUrl;
-	protected $settings;
 	protected $isLinked;
 
 	/**
@@ -39,17 +39,29 @@ class KeycdnService extends BaseApplicationComponent
 		}
 
 
+		// make sure URLs start with the zone base and not an alias
 		foreach ($urls as &$url)
 		{
 			$urlParts = parse_url($url);
 
-			// make sure URL starts with the zone base and not an alias
-			// "https://cdn.foo.com/flower.png" → "foo.kxcdn.com/flower.png"
+			KeycdnPlugin::log('handling ' . $url, LogLevel::Info);
 
-			str_replace($urlParts['scheme'] . '://' . $urlParts['host'], $this->settings->zone, $url);
+			if (isset($urlParts['scheme']) && isset($urlParts['host']))
+			{
+				// `https://cdn.foo.com/flower.png` → `foo.kxcdn.com/flower.png`
+				$url = str_replace($urlParts['scheme'] . '://' . $urlParts['host'], $this->settings->zone, $url);
+			}
+			else
+			{
+				// `/flower.png` → `foo.kxcdn.com/flower.png`
+				$url = $this->settings->zone . $url;
+			}
+
+			KeycdnPlugin::log('clearing ' . $url, LogLevel::Info);
 		}
 
-		return $this->holler('zones/purgeurl/' . $this->settings->zoneId . '.json', $urls, 'delete');
+
+		return $this->holler('zones/purgeurl/' . $this->settings->zoneId . '.json', array('urls' => $urls), 'delete');
 	}
 
 
@@ -68,23 +80,16 @@ class KeycdnService extends BaseApplicationComponent
 	{
 		if ( ! $this->isLinked)
 		{
-			// TODO: warn that we don't have an API key, rather than just failing silently
+			KeycdnPlugin::log('Please set the KeyCDN API key.', LogLevel::Warning);
 			return;
 		}
 
 		$requestSettings = array(
-			"auth"    => array($this->settings->apiKey, "password", "Basic"),
-			"headers" => array(
-				"Content-Type" => "applicaton/json; charset=utf-8",
-				"Accept"       => "application/json, text/javascript, */*; q=0.01",
-			),
 			"verify" => false,
 			"debug"  => false
 		);
 
 		$client = new \Guzzle\Http\Client($this->apiBaseUrl);
-
-		// TODO: respond thoughtfully to failures
 
 		if ($method === 'get')
 		{
@@ -99,10 +104,14 @@ class KeycdnService extends BaseApplicationComponent
 			try
 			{
 				$request  = $client->get($endpoint . $query, array(), $requestSettings);
+
+				$request->setAuth($this->settings->apiKey);
+
 				$response = $request->send();
 
 				if ( ! $response->isSuccessful())
 				{
+					KeycdnPlugin::log('Request failed: ' . $response->getBody(), LogLevel::Warning);
 					return;
 				}
 
@@ -117,13 +126,16 @@ class KeycdnService extends BaseApplicationComponent
 		{
 			try
 			{
-				$request = $this->client->post($endpoint, array(), $requestSettings);
+				$request = $client->post($endpoint, array(), $requestSettings);
 
+				$request->setAuth($this->settings->apiKey);
 				$request->setBody($data);
+
 				$response = $request->send();
 
 				if ( ! $response->isSuccessful())
 				{
+					KeycdnPlugin::log('Request failed: ' . $response->getBody(), LogLevel::Warning);
 					return;
 				}
 
@@ -138,13 +150,16 @@ class KeycdnService extends BaseApplicationComponent
 		{
 			try
 			{
-				$request = $this->client->delete($endpoint, array(), $requestSettings);
+				$request = $client->delete($endpoint, array(), $requestSettings);
 
+				$request->setAuth($this->settings->apiKey);
 				$request->setBody($data);
+
 				$response = $request->send();
 
 				if ( ! $response->isSuccessful())
 				{
+					KeycdnPlugin::log('Request failed: ' . $response->getBody(), LogLevel::Warning);
 					return;
 				}
 
@@ -159,13 +174,16 @@ class KeycdnService extends BaseApplicationComponent
 		{
 			try
 			{
-				$request = $this->client->put($endpoint, array(), $requestSettings);
+				$request = $client->put($endpoint, array(), $requestSettings);
 
 				$request->setBody($data);
+				$request->setAuth($this->settings->apiKey);
+
 				$response = $request->send();
 
 				if ( ! $response->isSuccessful())
 				{
+					KeycdnPlugin::log('Request failed: ' . $response->getBody(), LogLevel::Warning);
 					return;
 				}
 
@@ -181,3 +199,5 @@ class KeycdnService extends BaseApplicationComponent
 			// unsupportd method
 		}
 	}
+
+}
