@@ -38,7 +38,6 @@ class KeycdnService extends BaseApplicationComponent
 			return;
 		}
 
-
 		// make sure URLs start with the zone base and not an alias
 		foreach ($urls as &$url)
 		{
